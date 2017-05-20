@@ -5,19 +5,40 @@
          calcular();
      } 
 
-     
-     function calcular(){
-         $esp = $_POST['espessura'];
+     if($action == 'PesoDeLaje'){
+         PesoDeLaje();
+     }
 
+     function CalcularMomento($Espessura){
          $peso_concreto = 2.550;
          $sobrecarga_momento = 0.204;
-         $sobrecarga_flecha = 0.102;
+        //  $sobrecarga_flecha = 0.102;
 
-         $resultado = ( $esp * $peso_concreto + $sobrecarga_momento )
+        return $Espessura * $peso_concreto + $sobrecarga_momento;
 
-         $resposta = 'Resultado: ' . $resultado . '<br>';
+     }
 
-         echo json_encode($resposta);
+     function CalcularFlecha($Espessura){
+        $peso_concreto = 2.550;
+        $sobrecarga_flecha = 0.102;
+
+        return $Espessura * $peso_concreto + $sobrecarga_flecha;
+     }
+
+     function PesoDeLaje(){
+        $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
+        if($Espessura == null){
+            $resposta = array(
+                'Erro' => "Valor da espessura inválido."
+            );
+        }else{
+            $resposta = array(
+                'Momento' => CalcularMomento($Espessura),
+                'Flecha' => CalcularFlecha($Espessura)
+            );
+        }
+        header('Content-Type: application/json');
+        echo json_encode($resposta);
      }
 
     
