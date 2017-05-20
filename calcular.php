@@ -14,7 +14,7 @@
          $sobrecarga_momento = 0.204;
         //  $sobrecarga_flecha = 0.102;
 
-        return $Espessura * $peso_concreto + $sobrecarga_momento;
+        return (float)$Espessura * $peso_concreto + $sobrecarga_momento;
 
      }
 
@@ -22,12 +22,13 @@
         $peso_concreto = 2.550;
         $sobrecarga_flecha = 0.102;
 
-        return $Espessura * $peso_concreto + $sobrecarga_flecha;
+        return (float) $Espessura * $peso_concreto + $sobrecarga_flecha;
      }
 
      function PesoDeLaje(){
         $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
-        if($Espessura == null){
+        $Espessura = (float) str_replace(',' , '.', $Espessura);
+        if($Espessura == null || $Espessura <= 0){
             $resposta = array(
                 'Erro' => "Valor da espessura inválido."
             );

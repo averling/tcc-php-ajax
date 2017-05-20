@@ -11,7 +11,7 @@
 				<legend>Dados da Estrutura</legend>
 					<p> Digite a espessura da laje em metros (m):</p>	
 					<input type="text" name="espessura" id="espessura" placeholder="espessura (m)" required/>
-					<input type="button" onclick="" value="Calcular" id="CalcularLaje">
+					<input type="button" value="Calcular" id="CalcularLaje">
 					<p>Peso da laje pelo momento em tf/m: </p>
 					<input type="text" name="peso_lj_momento" id="peso_lj_momento" placeholder="peso pelo momento" value = "0" readonly="" />
 					<p>Peso da laje pela flecha em tf/m: </p>
@@ -99,6 +99,7 @@
 				'Espessura': espessura
 			},
 			success:function(data){
+				console.log(data);
 				if(data.Erro != null){
 					alert(data.Erro);
 				}else{
