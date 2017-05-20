@@ -1,0 +1,50 @@
+
+
+<section id="segura-items">
+	<form method ="POST" action="">
+	<!-- Cadastro de compensados-->
+		<fieldset>
+			<legend> Dados do Compensado</legend>
+			<label>Espessura do compensado: </label> <input type="text" id="espessura_comp" placeholder="Espessura do compensado" required/>mm
+			<br>
+			<label>Escolha o tipo da chapa do compensado: </label>
+			<select id="tipo_comp">
+				<option value="110x220"> 110 x 220 </option>
+				<option value="122x244"> 122 x 244 </option>
+			</select>
+			<br>
+			<label>Momento admissivel: </label><input type="text" id="momento_comp" placeholder="momento admissivel do compensado" required/>
+			<br>
+			<label>E (Módulo de Elasticidade): </label><input type="text" id="e_comp" placeholder="Módulo de Elasticidade" required/>
+			<br>
+			<label>J (Momento de inércia): </label><input type="text" id="j_comp" placeholder="Momento de inércia" required/>
+			<br>
+			<input type="submit" id="cadastrar_comp" value="Cadastrar compensado"/>
+		</fieldset>
+
+		<!-- Cadastro de perfis-->
+		<fieldset>
+			<legend> Dados do Perfil</legend>
+			<label>Nome do perfil: </label> <input type="text" id="nome_perfil" placeholder="nome do perfil" required/>
+			<br>
+			<label>Momento admissivel: </label><input type="text" id="momento_perfil" placeholder="momento admissivel do perfil" required/>
+			<br>
+			<label>E (Módulo de Elasticidade): </label><input type="text" id="e_perfil" placeholder="Módulo de Elasticidade" required/>
+			<br>
+			<label>J (Momento de inércia): </label><input type="text" id="j_perfil" placeholder="Momento de inércia" required/>
+			<br>
+			<input type="submit" id="cadastrar_perfil" value="Cadastrar perfil"/>
+		</fieldset>
+
+		<!-- Cadastro de postes (Escoras e Torres de Carga)-->
+		<fieldset>
+			<legend> Dados do apoio</legend>
+			<label>Nome do apoio: </label> <input type="text" id="nome_apoio" placeholder="nome do apoio" required/>
+			<label>Ex.:Escoras, Torres de carga e etc</label>
+			<br>
+			<label>Carga admissivel: </label> <input type="text" id="carga_adm" placeholder="carga admissivel no apoio" required/>
+			<br>
+			<input type="submit" id="cadastrar_apoio" value="Cadastrar apoio"/>
+		</fieldset>
+	</form>
+</section>			

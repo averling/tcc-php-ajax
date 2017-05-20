@@ -1,0 +1,90 @@
+<?php include 'C:/AppServ/conexao_banco/conexao.inc'; ?>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+	<section id="segura-items">
+		<h3>Escoramento de Laje</h3>
+		<form  name="form" action="http://<?php echo $host; ?>/<?php echo $wpFolder; ?>/crud/" method="POST"> 
+
+			<!-- Informações sobre a estrutura e peso da laje-->
+			<fieldset>	
+				<legend>Dados da Estrutura</legend>
+					<p> Digite a espessura da laje em metros (m):</p>	
+					<input type="text" name="espessura" id="= espessura" placeholder="espessura (m)" required/>
+					<input type="button" onclick="" value="Calcular" id="calcular">
+					<p>Peso da laje pelo momento em tf/m: </p>
+					<input type="text" name="peso_lj_momento" id="peso_lj_momento" placeholder="peso pelo momento" value = "0" readonly="" />
+					<p>Peso da laje pela flecha em tf/m: </p>
+					<input type="text" name="peso_lj_flecha" id="=peso_lj_flecha" placeholder="peso pela flecha" value = "0" readonly="" />
+			</fieldset>
+			
+
+			<!-- Informações sobre o compensado-->
+			<fieldset>
+				<legend>Dados do compensado</legend>
+					<p>Escolha o compensado:</p>
+					<select name="compensado">
+
+						<!-- ESPESSURAS DO COMPENSADO VINDOS DO BANCO DE DADOS COMO OPTION-->
+
+					</select>  
+					<br>
+					<p>Escolha o tipo do compensado</p>
+					<select name="tipo_comp">
+
+						<option value="110x220">110 x 220</option>
+						<option value="122x244">122 x 244</option>
+
+					</select> 
+					<br>
+					<p>Vão máximo admissivel pelo compensado:	</p>	
+					<input type="text" name="Lcomp" id="= Lcomp" placeholder="vão máximo do compensado" />
+			</fieldset>
+			
+
+			<!-- Informações sobre o perfil secundario-->
+			<fieldset>
+				<legend>Dados do perfil secundario</legend>
+					<p>Escolha o perfil secundario:</p>
+					<select name="perfil secundario"> 
+						<?php
+				  	 		
+							<!-- NOMES DOS PERFIS VINDOS DO BANCO DE DADOS COMO OPTION-->
+
+						?>    
+					</select>
+
+					<p> Vão máximo admissivel pelo perfil secundario:</p>	
+					<input type="text" name="Lperfilsecundario" id="= Lperfilsecundario" placeholder="vão máximo do perfil secundario" />
+			</fieldset>
+
+
+			<!-- Informações sobre o perfil primario-->
+			<fieldset>
+				<legend>Dados do perfil primario</legend>
+					<p>Escolha o perfil primario:</p>
+					<select name="perfil primario">
+						<?php
+				  	 		
+				  	 		<!-- NOMES DOS PERFIS VINDOS DO BANCO DE DADOS COMO OPTION-->
+
+						?>    
+					</select>
+
+					<p> Vão máximo admissivel pelo perfil primario:</p>	
+					<input type="text" name="Lperfilprimario" id="= Lperfilprimario" placeholder="vão máximo do perfil primario" required/>
+			</fieldset>
+
+		<!-- Informações sobre carga no poste-->
+			
+			<fieldset>
+				<legend>Carga no poste</legend>
+					<p> área de influencia considerada:</p>	
+					<input type="text" name="area" id="= area" placeholder="area de influencia" required/>
+					<p> Carga no poste:</p>	
+					<input type="text" name="cargaposte" id="= cargaposte" placeholder="carga no poste" required/>	
+					<button type="submit" name="salvarCalculo" title="Salva novo Calculo">Salvar</button> 
+			</fieldset>
+
+		</form>
+	</section>
