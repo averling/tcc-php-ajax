@@ -1,0 +1,30 @@
+Espessura da laje <input type="text" id="espessura_laje">
+<br>
+
+<button id="calcular">Calcular</button>
+<br>
+resultado <input type="text" id="resultado">
+    
+
+<script src="jquery-1.12.4.js"></script>
+
+<script>
+    //chamando uma função de um arquivo php
+     $('#calcular').click(function(){
+         var esp = $('#espessura_laje').val();
+         
+         var dados = {
+             'espessura': esp
+             
+         };
+         $.ajax({
+             url: 'calcular.php?action=calcular',
+             type: 'POST',
+             data: dados,
+             success:function(data){
+                 $('#resultado').append(data);
+             }
+         });
+     })
+
+   
