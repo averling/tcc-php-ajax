@@ -1,4 +1,4 @@
-<?php include 'C:/AppServ/conexao_banco/conexao.inc'; ?>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
@@ -23,7 +23,7 @@
 			<fieldset>
 				<legend>Dados do compensado</legend>
 					<p>Escolha o compensado:</p>
-					<select name="compensado">
+					<select id="compensado">
 						<option value="0">Selecione um item</option>
 						<?php
 							for($i = 0; $i < count($compensado['id']); $i++){
@@ -36,7 +36,7 @@
 					</select>  
 					<br>
 					<p>Escolha o tipo do compensado</p>
-					<select name="tipo_comp">
+					<select id="tipo_comp">
 						<option value="0">Selecione um item</option>
 						<?php 
 							for($i = 0; $i < count($chapas['id']); $i++){
@@ -49,7 +49,8 @@
 					</select> 
 					<br>
 					<p>Vão máximo admissivel pelo compensado:	</p>	
-					<input type="text" name="Lcomp" id="= Lcomp" placeholder="vão máximo do compensado" />
+					<input type="text" name="Lcomp" id="Lcomp" placeholder="vão máximo do compensado" />
+					<input type="button" value="Calcular" id="CalcularAdmCompensado">
 			</fieldset>
 			
 
@@ -123,6 +124,30 @@
 				}else{
 					$('#peso_lj_momento').val(data.Momento);
 					$('#peso_lj_flecha').val(data.Flecha);
+				}
+			}
+		});
+	});
+
+	$('#CalcularAdmCompensado').click(function(){
+		var espessura = $('#espessura').val();
+		var tipo_comp = $('#tipo_comp option:selected').val();
+		var compensado = $('#compensado option:selected').val();
+
+		$.ajax({
+			url: 'calcular.php?action=CalcularVao',
+			type: 'POST',
+			data: {
+				'ID_compensado': compensado,
+				'Espessura': espessura,
+				'tipo_comp': tipo_comp
+			},
+			success:function(data){
+				console.log(data);
+				if(data.Erro != null){
+					alert(data.Erro);
+				}else{
+					$('#Lcomp').val(data.Vao);
 				}
 			}
 		});

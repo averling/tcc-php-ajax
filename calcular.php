@@ -3,18 +3,22 @@
      $action = $_GET['action'];
      if($action == 'calcular'){
          calcular();
+         return false;
      } 
 
      if($action == 'PesoDeLaje'){
          PesoDeLaje();
+         return false;
      }
 
      if($action == 'Flecha'){
          Flecha();
+         return false;
      }
 
      if($action = 'CalcularVao'){
         CalcularVao();
+        return false;
      }
 
      //Calculo do peso da laje pelo momento
@@ -37,6 +41,7 @@
 
      //Validação da espessura e resposta das funções de calculo de peso
     function PesoDeLaje(){
+        
         $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
         $Espessura = (float) str_replace(',' , '.', $Espessura);
         if($Espessura == null || $Espessura <= 0){
@@ -80,32 +85,36 @@
 
     //Validação dos parametos e resultados dos calculos de vão
     function CalcularVao(){
-        // $ID_compensado = isset($_POST['ID_compensado']) ? $_POST['ID_compensado'] : null;
-        // $Chapa = isset($_POST['tipo_comp']) ? $_POST['tipo_com'] : null;
-        // $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
-        // $Espessura = (float) str_replace(',' , '.', $Espessura);
-        
-        $ID_compensado = 4;
-        $Espessura = 0.15;
-        $Chapa = 1;
+        // var_dump($_POST);return false;
+        $ID_compensado = isset($_POST['ID_compensado']) ? $_POST['ID_compensado'] : null;
+        $Chapa = isset($_POST['tipo_comp']) ? $_POST['tipo_comp'] : null;
+        $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
+        $Espessura = (float) str_replace(',' , '.', $Espessura);
+        // echo $ID_compensado;
+        // $ID_compensado = 4;
+        // $Espessura = 0.15;
+        // $Chapa = 1;
         
 
         if($Espessura == null || $Espessura <= 0){
             $resposta = array(
                 'Erro' => "Valor da espessura inválido."
             );
+            header('Content-Type: application/json');
             echo json_encode($resposta);
             return false;
         }
 
         if($Chapa == null || $Chapa == 0){
             $resposta = array('Erro' => 'Selecione um tipo de compensado.');
+            header('Content-Type: application/json');
             echo json_encode($resposta);
             return false;
         }
 
         if($ID_compensado == null || $ID_compensado ==0){
             $resposta = array('Erro'=>'Compensado não encontrado ou invalido. Selecione novamente');
+            header('Content-Type: application/json');
             echo json_encode($resposta);
             return false;
         }else{
@@ -126,15 +135,15 @@
 
             
 
-            echo 'Q: ' . $q;
-            echo '<br>Espessura: ' . $Espessura;
-            // echo '<br>Q: ' . CalcularMomento($Espessura);
-            echo '<br>Compensado: ' . $compensado['momento_adm'];
-            echo '<br>peso proprio compensado:' . $compensado['peso_proprio'];
-            echo '<br>Momento: ' . $momento;
-            echo '<br>Carga: ' . $carga;
-            echo '<br>Flecha Adm: ' . $flecha_adm;
-            echo '<br>Flecha: ' . $flecha; 
+            // echo 'Q: ' . $q;
+            // echo '<br>Espessura: ' . $Espessura;
+            // // echo '<br>Q: ' . CalcularMomento($Espessura);
+            // echo '<br>Compensado: ' . $compensado['momento_adm'];
+            // echo '<br>peso proprio compensado:' . $compensado['peso_proprio'];
+            // echo '<br>Momento: ' . $momento;
+            // echo '<br>Carga: ' . $carga;
+            // echo '<br>Flecha Adm: ' . $flecha_adm;
+            // echo '<br>Flecha: ' . $flecha; 
 
             $auxiliar;
             $menor = array('ref', 'valor_chapa');
@@ -147,9 +156,9 @@
                 for($i = 0; $i < count($valoresChapa['valor']); $i++){
                     
                     $auxiliar = $tmp - $valoresChapa['valor'][$i];
-                    echo '<br><br>ref: ' . $menor['ref'];
-                    echo '<br>diferenca: ' . $auxiliar;
-                    echo '<br>valor chapa: ' . $menor['valor_chapa'];
+                    // echo '<br><br>ref: ' . $menor['ref'];
+                    // echo '<br>diferenca: ' . $auxiliar;
+                    // echo '<br>valor chapa: ' . $menor['valor_chapa'];
                     
                     if($menor['ref'] > $auxiliar && $auxiliar > 0){
                         $menor['valor_chapa'] = $valoresChapa['valor'][$i];
@@ -163,9 +172,9 @@
                 for($i = 0; $i < count($valoresChapa['valor']); $i++){
                     
                     $auxiliar = $tmp - $valoresChapa['valor'][$i];
-                    echo '<br><br>ref: ' . $menor['ref'];
-                    echo '<br>diferenca: ' . $auxiliar;
-                    echo '<br>valor chapa: ' . $menor['valor_chapa'];
+                    // echo '<br><br>ref: ' . $menor['ref'];
+                    // echo '<br>diferenca: ' . $auxiliar;
+                    // echo '<br>valor chapa: ' . $menor['valor_chapa'];
                     
                     if($menor['ref'] > $auxiliar && $auxiliar > 0){
                         $menor['valor_chapa'] = $valoresChapa['valor'][$i];
@@ -173,9 +182,12 @@
                     }
                 }
             }
-            echo '<br><br>Vao: ' . $resposta['Vao'];
-            echo '<br>Tmp: ' . $tmp;
-            echo '<br>Menor: ' . $menor['valor_chapa'];
+            $resposta['Vao'] = $menor['valor_chapa'];
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            // echo '<br><br>Vao: ' . $resposta['Vao'];
+            // echo '<br>Tmp: ' . $tmp;
+            // echo '<br>Menor: ' . $menor['valor_chapa'];
             
             // echo json_encode($resposta);
         }
