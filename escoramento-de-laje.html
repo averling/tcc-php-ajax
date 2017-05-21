@@ -24,14 +24,20 @@
 				<legend>Dados do compensado</legend>
 					<p>Escolha o compensado:</p>
 					<select name="compensado">
-
-						<!-- ESPESSURAS DO COMPENSADO VINDOS DO BANCO DE DADOS COMO OPTION-->
+						<option value="0">Selecione um item</option>
+						<?php
+							for($i = 0; $i < count($compensado['id']); $i++){
+						?>
+							<option value="<?php echo $compensado['id'][$i]; ?>"><?php echo $compensado['esp_comp'][$i]; ?></option>
+						<?php
+							}
+						?>
 
 					</select>  
 					<br>
 					<p>Escolha o tipo do compensado</p>
 					<select name="tipo_comp">
-
+						<option value="0">Selecione um item</option>
 						<option value="110x220">110 x 220</option>
 						<option value="122x244">122 x 244</option>
 
@@ -47,11 +53,14 @@
 				<legend>Dados do perfil secundario</legend>
 					<p>Escolha o perfil secundario:</p>
 					<select name="perfil secundario"> 
+					<option value="0">Selecione um item</option>
 						<?php
-				  	 		
-							<!-- NOMES DOS PERFIS VINDOS DO BANCO DE DADOS COMO OPTION-->
-
-						?>    
+							for($i = 0; $i < count($perfil['id']); $i++){
+						?>
+							<option value="<?php echo $perfil['id'][$i]; ?>"><?php echo $perfil['nome_perfil'][$i]; ?></option>
+						<?php
+							}
+						?>   
 					</select>
 
 					<p> Vão máximo admissivel pelo perfil secundario:</p>	
@@ -64,11 +73,14 @@
 				<legend>Dados do perfil primario</legend>
 					<p>Escolha o perfil primario:</p>
 					<select name="perfil primario">
+					<option value="0">Selecione um item</option>
 						<?php
-				  	 		
-				  	 		<!-- NOMES DOS PERFIS VINDOS DO BANCO DE DADOS COMO OPTION-->
-
-						?>    
+							for($i = 0; $i < count($perfil['id']); $i++){
+						?>
+							<option value="<?php echo $perfil['id'][$i]; ?>"><?php echo $perfil['nome_perfil'][$i]; ?></option>
+						<?php
+							}
+						?>     
 					</select>
 
 					<p> Vão máximo admissivel pelo perfil primario:</p>	
