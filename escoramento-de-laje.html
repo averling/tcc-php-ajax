@@ -38,8 +38,13 @@
 					<p>Escolha o tipo do compensado</p>
 					<select name="tipo_comp">
 						<option value="0">Selecione um item</option>
-						<option value="110x220">110 x 220</option>
-						<option value="122x244">122 x 244</option>
+						<?php 
+							for($i = 0; $i < count($chapas['id']); $i++){
+						?>
+							<option value="<?php echo $chapas['id'][$i]; ?>"><?php echo $chapas['tipo_chapa'][$i]; ?></option>
+						<?php
+							}
+						?>
 
 					</select> 
 					<br>

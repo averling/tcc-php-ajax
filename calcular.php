@@ -9,6 +9,14 @@
          PesoDeLaje();
      }
 
+     if($action == 'Flecha'){
+         Flecha();
+     }
+
+     if($action = 'CalcularVao'){
+        CalcularVao();
+     }
+
      function CalcularMomento($Espessura){
          $peso_concreto = 2.550;
          $sobrecarga_momento = 0.204;
@@ -24,6 +32,8 @@
 
         return (float) $Espessura * $peso_concreto + $sobrecarga_flecha;
      }
+
+     
 
      function PesoDeLaje(){
         $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
@@ -42,6 +52,96 @@
         echo json_encode($resposta);
      }
 
-    
+     function Momento($momento, $q){
+        $tmp = 8 * $momento;
+        // echo $tmp;
+        $tmp = $tmp/$q;
+        return sqrt($tmp);
+        // return sqrt((8*$momento)/$q);
 
- 
+     }
+
+     function FlechaAdm($l){
+
+        return (($l/500)+1);
+     }
+
+    function Flecha($l,$carga,$e,$j){
+        //echo pow((0.217*384*70000*28.125)/(5*4.955),1/4);
+        return pow(($l*384*$e*$j)/(5*$carga),1/4);
+
+    }
+
+    function CalcularVao(){
+        // $ID_compensado = isset($_POST['ID_compensado']) ? $_POST['ID_compensado'] : null;
+        // $Chapa = isset($_POST['tipo_comp']) ? $_POST['tipo_com'] : null;
+        // $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
+        // $Espessura = (float) str_replace(',' , '.', $Espessura);
+        
+        $ID_compensado = 4;
+        $Espessura = 0.15;
+        $Chapa = 1;
+        
+
+        if($Espessura == null || $Espessura <= 0){
+            $resposta = array(
+                'Erro' => "Valor da espessura inválido."
+            );
+            echo json_encode($resposta);
+            return false;
+        }
+
+        if($Chapa == null || $Chapa == 0){
+            $resposta = array('Erro' => 'Selecione um tipo de compensado.');
+            echo json_encode($resposta);
+            return false;
+        }
+
+        if($ID_compensado == null || $ID_compensado ==0){
+            $resposta = array('Erro'=>'Compensado não encontrado ou invalido. Selecione novamente');
+            echo json_encode($resposta);
+            return false;
+        }else{
+
+            require_once('connect.php');
+            $con = new Connect();
+
+            $compensado = $con->RetornarDadosCompensado($ID_compensado); 
+
+            $q = CalcularMomento($Espessura);
+            $momento = Momento($compensado['momento_adm'],$q*10);
+            $carga = CalcularFlecha($Espessura);
+            $flecha_adm = FlechaAdm($momento*10);
+            $flecha = Flecha($flecha_adm,$carga,$compensado['e_comp'],$compensado['j_comp']);
+            $resposta = array('Vao');
+
+            $valoresChapa = $con->RetornarDadosChapas($Chapa);
+
+            $aproximado = array('indice', 'diferenca');
+
+            echo 'Q: ' . $q;
+            echo '<br>Espessura: ' . $Espessura;
+            // echo '<br>Q: ' . CalcularMomento($Espessura);
+            echo '<br>Compensado: ' . $compensado['momento_adm'];
+            echo '<br>Momento: ' . $momento;
+            echo '<br>Carga: ' . $carga;
+            echo '<br>Flecha Adm: ' . $flecha_adm;
+            echo '<br>Flecha: ' . $flecha; 
+            
+            if ($momento > $flecha){
+
+                $resposta['Vao']=$flecha;
+                for($i = 0; $i < count($valoresChapa); $i++){
+                    $aproximado['indice'] = $i;
+                    $aproximado['diferenca'] = $resposta['Vao'] - $valoresChapa['valor'][$i];
+                }
+            }else{
+                $resposta['Vao']=$momento;
+                for($i = 0; $i < count($valoresChapa); $i++){
+                    $aproximado['indice'] = $i;
+                    $aproximado['diferenca'] = $resposta['Vao'] - $valoresChapa['valor'][$i];
+                }
+            }
+            // echo json_encode($resposta);
+        }
+    }
