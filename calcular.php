@@ -54,8 +54,8 @@
      }
 
      //calculo do vão pelo momento
-     function Momento($momento, $q){
-        $peso = ($q*10); //mudança de tf para kgf
+     function Momento($momento, $q, $peso_proprio_compensado){
+        $peso = ($q*10) + $peso_proprio_compensado; //mudança de tf para kgf
         $tmp = 8 * $momento;
         // echo $tmp;
         $tmp = $tmp/$peso;
@@ -116,7 +116,7 @@
             $compensado = $con->RetornarDadosCompensado($ID_compensado); 
 
             $q = CalcularMomento($Espessura);
-            $momento = Momento($compensado['momento_adm'],$q);
+            $momento = Momento($compensado['momento_adm'],$q, $compensado['peso_proprio']);
             $carga = CalcularFlecha($Espessura);
             $flecha_adm = FlechaAdm($momento);
             $flecha = Flecha($flecha_adm,$carga,$compensado['e_comp'],$compensado['j_comp']);
