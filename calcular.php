@@ -124,7 +124,7 @@
 
             $valoresChapa = $con->RetornarDadosChapas($Chapa);
 
-            $aproximado = array('indice', 'diferenca');
+            
 
             echo 'Q: ' . $q;
             echo '<br>Espessura: ' . $Espessura;
@@ -135,21 +135,48 @@
             echo '<br>Carga: ' . $carga;
             echo '<br>Flecha Adm: ' . $flecha_adm;
             echo '<br>Flecha: ' . $flecha; 
-            
+
+            $auxiliar;
+            $menor = array('ref', 'valor_chapa');
+            $menor['ref'] = 100;
+            $menor['valor_chapa'] = 0;
             if ($momento > $flecha){
 
                 $resposta['Vao']=$flecha;
-                for($i = 0; $i < count($valoresChapa); $i++){
-                    $aproximado['indice'] = $i;
-                    $aproximado['diferenca'] = $resposta['Vao'] - $valoresChapa['valor'][$i];
+                $tmp = $resposta['Vao'] / 100;
+                for($i = 0; $i < count($valoresChapa['valor']); $i++){
+                    
+                    $auxiliar = $tmp - $valoresChapa['valor'][$i];
+                    echo '<br><br>ref: ' . $menor['ref'];
+                    echo '<br>diferenca: ' . $auxiliar;
+                    echo '<br>valor chapa: ' . $menor['valor_chapa'];
+                    
+                    if($menor['ref'] > $auxiliar && $auxiliar > 0){
+                        $menor['valor_chapa'] = $valoresChapa['valor'][$i];
+                        $menor['ref'] = $auxiliar;
+                    }
                 }
             }else{
                 $resposta['Vao']=$momento;
-                for($i = 0; $i < count($valoresChapa); $i++){
-                    $aproximado['indice'] = $i;
-                    $aproximado['diferenca'] = $resposta['Vao'] - $valoresChapa['valor'][$i];
+                $tmp = $resposta['Vao'] / 100;
+                
+                for($i = 0; $i < count($valoresChapa['valor']); $i++){
+                    
+                    $auxiliar = $tmp - $valoresChapa['valor'][$i];
+                    echo '<br><br>ref: ' . $menor['ref'];
+                    echo '<br>diferenca: ' . $auxiliar;
+                    echo '<br>valor chapa: ' . $menor['valor_chapa'];
+                    
+                    if($menor['ref'] > $auxiliar && $auxiliar > 0){
+                        $menor['valor_chapa'] = $valoresChapa['valor'][$i];
+                        $menor['ref'] = $auxiliar;
+                    }
                 }
             }
+            echo '<br><br>Vao: ' . $resposta['Vao'];
+            echo '<br>Tmp: ' . $tmp;
+            echo '<br>Menor: ' . $menor['valor_chapa'];
+            
             // echo json_encode($resposta);
         }
     }
