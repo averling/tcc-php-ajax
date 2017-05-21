@@ -17,6 +17,7 @@
         CalcularVao();
      }
 
+     //Calculo do peso da laje pelo momento
      function CalcularMomento($Espessura){
          $peso_concreto = 2.550;
          $sobrecarga_momento = 0.204;
@@ -26,6 +27,7 @@
 
      }
 
+     //Calculo do peso da laje pela flecha
      function CalcularFlecha($Espessura){
         $peso_concreto = 2.550;
         $sobrecarga_flecha = 0.102;
@@ -33,9 +35,8 @@
         return (float) $Espessura * $peso_concreto + $sobrecarga_flecha;
      }
 
-     
-
-     function PesoDeLaje(){
+     //Validação da espessura e resposta das funções de calculo de peso
+    function PesoDeLaje(){
         $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
         $Espessura = (float) str_replace(',' , '.', $Espessura);
         if($Espessura == null || $Espessura <= 0){
@@ -52,26 +53,32 @@
         echo json_encode($resposta);
      }
 
+     //calculo do vão pelo momento
      function Momento($momento, $q){
+        $peso = ($q*10); //mudança de tf para kgf
         $tmp = 8 * $momento;
         // echo $tmp;
-        $tmp = $tmp/$q;
+        $tmp = $tmp/$peso;
         return sqrt($tmp);
         // return sqrt((8*$momento)/$q);
 
      }
 
+     //Calculo da flecha admissivel
      function FlechaAdm($l){
-
-        return (($l/500)+1);
+        $vao = $l*10;//mudança de cm para mm
+        return (($vao/500)+1);
      }
-
+    //Calculo do vão pela Flecha 
     function Flecha($l,$carga,$e,$j){
+        $vao = $l/10; //mudança de mm para cm
+        $peso = $carga *10; //mudança de tf para kgf
         //echo pow((0.217*384*70000*28.125)/(5*4.955),1/4);
-        return pow(($l*384*$e*$j)/(5*$carga),1/4);
+        return pow(($vao*384*$e*$j)/(5*$peso),1/4);
 
     }
 
+    //Validação dos parametos e resultados dos calculos de vão
     function CalcularVao(){
         // $ID_compensado = isset($_POST['ID_compensado']) ? $_POST['ID_compensado'] : null;
         // $Chapa = isset($_POST['tipo_comp']) ? $_POST['tipo_com'] : null;
@@ -109,9 +116,9 @@
             $compensado = $con->RetornarDadosCompensado($ID_compensado); 
 
             $q = CalcularMomento($Espessura);
-            $momento = Momento($compensado['momento_adm'],$q*10);
+            $momento = Momento($compensado['momento_adm'],$q);
             $carga = CalcularFlecha($Espessura);
-            $flecha_adm = FlechaAdm($momento*10);
+            $flecha_adm = FlechaAdm($momento);
             $flecha = Flecha($flecha_adm,$carga,$compensado['e_comp'],$compensado['j_comp']);
             $resposta = array('Vao');
 
