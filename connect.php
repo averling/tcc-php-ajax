@@ -38,6 +38,7 @@
         // var_dump($row);
           array_push($array['id'], $row->ID);
           array_push($array['nome_perfil'], $row->nome_perfil);
+          
       }
       return $array;
     }
@@ -81,7 +82,21 @@
       return $array;
     }
 
-
+    public function RetornarDadosPerfil($ID){
+      $query = "select * from perfil where ID=$ID";
+      $resultado = $result = mysql_query($query) or die('Falha na instrução SQL: ' . mysql_error());
+      $array = array('id','nome_perfil','momento_perfil','e_perfil', 'j_perfil', 'peso_perfil');
+      while ($row = mysql_fetch_object($result)) {
+        // var_dump($row);
+          $array['id']=$row->ID;
+          $array['nome_perfil']=$row->esp_comp;
+          $array['momento_perfil']=$row->momento_perfil;
+          $array['e_perfil']=$row->e_perfil;
+          $array['j_perfil']=$row->j_perfil;
+          $array['peso_perfil']=$row->peso_perfil;
+      }
+      return $array;
+    }
 
 
   }
