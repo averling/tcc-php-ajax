@@ -26,6 +26,11 @@
         return false;
      }
 
+     if($action == 'CalcularVaoPerfilPrimario'){
+        TesteVaoPerfilPrimario();
+        return false;
+     }
+
 
 
      //Calculo do peso da laje pelo momento
@@ -201,31 +206,8 @@
         }
     }
 
- //    //calculo do vão do perfil secundario pelo momento
- //     function MomentoPerfilSecundario($momento, $q, $peso_proprio, $vao_atuante ){
- //        $peso = (($q + $peso_proprio/1000)*10) * ($vao_atuante/100); //mudança de tf para kgf
- //        $tmp = 8 * $momento;
- //        // echo $tmp;
- //        $tmp = $tmp/$peso;
- //        return sqrt($tmp);
- //        // return sqrt((8*$momento)/$q);
 
- //     }
-
- // //Calculo do vão do perfil secundario pela Flecha 
- //    function FlechaPerfilSecundario($l,$carga,$e,$j, $peso_proprio, $vao_atuante){
- //        $vao = $l/10; //mudança de mm para cm
- //        echo 'Carga ' . $carga . '<br>';
- //        echo 'Peso Proprio ' . $peso_proprio . '<br>';
- //        echo 'Vao atuante ' . $vao_atuante . '<br>';
- //        $peso = (($carga + ($peso_proprio * 2) / 1000) *10) *($vao_atuante/100); //mudança de tf para kgf
- //        //echo pow((0.217*384*70000*28.125)/(5*4.955),1/4);
- //        echo 'Peso ' . $peso . '<br>'; 
- //        echo 'Vao ' . $vao . '<br>';
- //        return pow(($vao*384*$e*$j)/(5*($peso)),1/4);
-
- //    }
-
+//Validação e Respostas do vão do perfil Secundario
     function TesteVaoPerfilSecundario(){
         // var_dump($_POST);
         $ID_perfil = isset($_POST['ID_perfil']) ? $_POST['ID_perfil'] : null;
@@ -331,89 +313,118 @@
         return pow($tmp, 1/4);
     }
     
+//-------------------------------------------------------------------------------------------------------------------------------------------
 
-// //Validação e Respostas do vão do perfil Secundario
-//  function CalcularVaoPerfilSecundario(){
-        
-//         // $ID_perfil = isset($_POST['ID_perfil']) ? $_POST['ID_perfil'] : null;
-//         // $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
-//         // $Espessura = (float) str_replace(',' , '.', $Espessura);
-//         // $vao_atuante = isset($_POST['vao_atuante']) ? $_POST['vao_atuante'] : null;
-//         // $vao_admissivel = isset($_POST['vao_admissivel']) ? $_POST['vao_admissivel'] : null;
+//Calculos do Perfil Primario
 
-//         $ID_perfil = 2;
-//         $Espessura = 0.15;
-//         $vao_admissivel = 0.44;
-//         $vao_atuante = 0.44;
+    function TestePerfilPrimario($peso_laje, $peso_compensado, $peso_perfil_secundario, $peso_perfil_primario, $vao_atuante){
+        return ($peso_laje + ($peso_compensado / 1000) + (2 * ($peso_perfil_secundario / 1000)) + ($peso_perfil_primario/1000) ) * ($vao_atuante / 100);
+    }
 
 
+    function TesteMomentoPerfilPrimario ($peso,$momento_perfil) {
+        $tmp = (8 * $momento_perfil) / $peso ;
+        return sqrt($tmp);
+    }
 
-//         if ($vao_atuante > $vao_admissivel || $vao_atuante <=0){
+    function TesteFlechaPerfilPrimario ($e, $j, $flecha_admissivel, $peso) {
 
-//             $resposta = array(
-//                     'Erro' => "Vão atuante deve ser menor ou igual ao vão admissível."
-//                 );
-//             header('Content-Type: application/json');
-//             echo json_encode($resposta);
-//             return false;
-//         }
+        $flecha_admissivel = ($flecha_admissivel * 1000) / 500 + 1;
+
+        $tmp = (384 * $e * $j * ($flecha_admissivel / 10)) / (5 * ($peso * 10));
+        return pow($tmp, 1/4);
+    }
+
+//Validação e Respostas do vão do perfil Primario
+    function TesteVaoPerfilPrimario(){
+        // var_dump($_POST);
+        $ID_perfil_primario = isset($_POST['ID_perfil']) ? $_POST['ID_perfil'] : null;
+        $ID_perfil_secundario = isset($_POST['ID_perfil']) ? $_POST['ID_perfil'] : null;
+        $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
+        $Espessura = (float) str_replace(',' , '.', $Espessura);
+        $vao_atuante = isset($_POST['vao_atuante']) ? $_POST['vao_atuante'] : null;
+        $vao_admissivel = isset($_POST['vao_admissivel']) ? $_POST['vao_admissivel'] : null;
+        $id_compensado = isset($_POST['Id_compensado']) ? $_POST['Id_compensado'] : null;
+        // $espessura = 0.15;
+
+        if ($vao_atuante > $vao_admissivel || $vao_atuante <=0){
+
+            $resposta = array(
+                    'Erro' => "Vão atuante deve ser menor ou igual ao vão admissível."
+                );
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
                 
-//         if($Espessura == null || $Espessura <= 0){
-//             $resposta = array(
-//                 'Erro' => "Valor da espessura inválido."
-//             );
-//             header('Content-Type: application/json');
-//             echo json_encode($resposta);
-//             return false;
-//         }
+        if($Espessura == null || $Espessura <= 0){
+            $resposta = array(
+                'Erro' => "Valor da espessura inválido."
+            );
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
 
-//         if($vao_atuante == null || $vao_atuante <= 0){
-//             $resposta = array(
-//                 'Erro' => "Vão atuante inválido."
-//             );
-//             header('Content-Type: application/json');
-//             echo json_encode($resposta);
-//             return false;
-//         }
+        if($vao_atuante == null || $vao_atuante <= 0){
+            $resposta = array(
+                'Erro' => "Vão atuante inválido."
+            );
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
 
-//         if($ID_perfil== null || $ID_perfil ==0){
-//             $resposta = array('Erro'=>'Perfil não encontrado ou invalido. Selecione novamente');
-//             header('Content-Type: application/json');
-//             echo json_encode($resposta);
-//             return false;
-//         }else{
+        if($ID_perfil_primario == null || $ID_perfil_primario == 0){
+            $resposta = array('Erro'=>'Perfil Primario não encontrado ou invalido. Selecione novamente');
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
 
-//             require_once('connect.php');
-//             $con = new Connect();
+        if($ID_perfil_secundario == null || $ID_perfil_secundario == 0){
+            $resposta = array('Erro'=>'Perfil Secundario não encontrado ou invalido. Selecione novamente');
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
 
-//             $perfil = $con->RetornarDadosPerfil($ID_perfil); 
+
+        $peso_laje_flecha = CalcularFlecha($Espessura);
+        $peso_laje_momento = CalcularMomento($Espessura);
+        // $id_compensado = 4;
+        // $id_perfil = 2;
+
+        require_once('connect.php');
+
+        $con = new Connect();
+
+        $compensado = $con->RetornarDadosCompensado($id_compensado);
+        $perfil_primario = $con->RetornarDadosPerfil($ID_perfil_primario);
+        $perfil_secundario = $con->RetornarDadosPerfil($ID_perfil_secundario);
+
+        // $flecha_perfil_secundario = TestePerfilSecundario($peso_laje_flecha, $compensado['peso_proprio'], $perfil['peso_perfil']); estão funcionando, não tirar!
+        // $momento_perfil_secundario = TestePerfilSecundario($peso_laje_momento, $compensado['peso_proprio'], $perfil['peso_perfil']);
+
+        $flecha_perfil_primario = TestePerfilPrimario($peso_laje_flecha, $compensado['peso_proprio'], $perfil_secundario['peso_perfil'], $perfil_primario['peso_perfil'], $vao_atuante);
+        $momento_perfil_primario = TestePerfilPrimario($peso_laje_momento, $compensado['peso_proprio'], $perfil_secundario['peso_perfil'], $perfil_primario['peso_perfil'], $vao_atuante);
+        $momento_perfil = TesteMomentoPerfilPrimario($momento_perfil_primario, $perfil_primario['momento_perfil']);
+
+        $flecha_perfil = TesteFlechaPerfilPrimario($perfil_primario['e_perfil'], $perfil_primario['j_perfil'], $momento_perfil, $flecha_perfil_primario) / 100;
 
 
+        if($momento_perfil > $flecha_perfil){
+            $resposta = array(
+                "VaoMaximoAdmissivel" => $flecha_perfil
+                );
+        }else{
+            $resposta = array(
+                "VaoMaximoAdmissivel" => $momento_perfil
+                );
+        }
 
-//             $q = CalcularMomento($Espessura);
-//             echo "q: " . $q . "<br>";
-//             $momento = MomentoPerfilSecundario($perfil['momento_perfil'],$q, $perfil['peso_perfil'], $vao_atuante);
-//             echo "momento: " . $momento . "<br>";
-//             $carga = CalcularFlecha($Espessura);
-//             echo "carga: " . $carga . "<br>";
-//             $flecha_adm = FlechaAdm($momento);
-//             echo "Flecha admissivel: " . $flechaadm . "<br>";
-//             var_dump($perfil);
-//             $flecha = FlechaPerfilSecundario($flecha_adm,$carga,$perfil['e_perfil'],$perfil['j_perfil'], $perfil['peso_perfil'], $vao_atuante);
-//             echo "<br>flecha: " . $flecha . "<br>";
+        
+        header('Content-Type: application/json');
+            echo json_encode($resposta);
 
-//             $resposta = array('VaoSecundario');
-
-//            if($momento > $flecha){
-
-//             $resposta['VaoSecundario']=$flecha;
-//             echo json_encode($resposta);
-
-//            } else{
-
-//             $resposta['VaoSecundario']=$momento;
-//             echo json_encode($resposta);
-//            }        
-            
-//         }
-    // }
+    }

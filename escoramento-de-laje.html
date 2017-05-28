@@ -13,9 +13,9 @@
 					<input type="text" name="espessura" id="espessura" placeholder="espessura (m)" required/>
 					<input type="button" value="Calcular" id="CalcularLaje">
 					<p>Peso da laje pelo momento em tf/m: </p>
-					<input type="text" name="peso_lj_momento" id="peso_lj_momento" placeholder="peso pelo momento" value = "0" readonly="" />
-					<p>Peso da laje pela flecha em tf/m: </p>
-					<input type="text" name="peso_lj_flecha" id="peso_lj_flecha" placeholder="peso pela flecha" value = "0" readonly="" />
+					<input type="text" name="peso_lj_momento" id="peso_lj_momento" placeholder="peso pelo momento" value = "0" readonly="" /> tf/m
+					<p>Peso da laje pela flecha em tf/m: </p> 
+					<input type="text" name="peso_lj_flecha" id="peso_lj_flecha" placeholder="peso pela flecha" value = "0" readonly="" /> tf/m
 			</fieldset>
 			
 
@@ -52,10 +52,10 @@
 					<input type="button" value="Calcular" id="CalcularAdmCompensado">
 					<br>
 					<p>Vão máximo admissivel pelo compensado:	</p>	
-					<input type="text" name="Lcomp" id="Lcomp" placeholder="vão máximo do compensado" readonly="" />
+					<input type="text" name="Lcomp" id="Lcomp" placeholder="vão máximo do compensado" readonly="" /> cm
 					<br>
 					<p>Vão máximo atuante pelo compensado:	</p>	
-					<input type="text" name="Lcomp_atuante" id="Lcomp_atuante" placeholder="vão máximo atuante do compensado" />
+					<input type="text" name="Lcomp_atuante" id="Lcomp_atuante" placeholder="vão máximo atuante do compensado" /> cm
 											
 			</fieldset>
 			
@@ -75,12 +75,13 @@
 						?>   
 					</select>
 					<br>
+					<br>
 					<input type="button" value="Calcular Vao do Perfil" id="CalcularPerfilSecundario">
 					<p> Vão máximo admissivel pelo perfil secundario:</p>	
-					<input type="text" name="Lperfilsecundario" id="Lperfilsecundario" placeholder="vão máximo do perfil secundario" readonly="" />
+					<input type="text" name="Lperfilsecundario" id="Lperfilsecundario" placeholder="vão máximo do perfil secundario" readonly="" /> m
 					<br>
 					<p> Vão máximo atuante pelo perfil secundario:</p>	
-					<input type="text" name="Lperfilsec_atuante" id="Lperfilsec_atuante" placeholder="vão máximo atuante do perfil secundario"  />
+					<input type="text" name="Lperfilsec_atuante" id="Lperfilsec_atuante" placeholder="vão máximo atuante do perfil secundario"  /> m
 			</fieldset>
 
 
@@ -97,14 +98,15 @@
 						<?php
 							}
 						?>     
-					</select>
-
+					</select>	
+					<br>
+					<br>
 					<input type="button" value="Calcular Vao do Perfil" id="CalcularPerfilPrimario">
 
 					<p> Vão máximo admissivel pelo perfil primario:</p>	
-					<input type="text" name="Lperfilprimario" id="Lperfilprimario" placeholder="vão máximo do perfil primario" readonly="" />
+					<input type="text" name="Lperfilprimario" id="Lperfilprimario" placeholder="vão máximo do perfil primario" readonly="" /> m
 					<p> Vão máximo atuante pelo perfil primario:</p>	
-					<input type="text" name="Lperfilpri_atuante" id="Lperfilpri_atuante" placeholder="vão máximo atuante do perfil primario" readonly="" />
+					<input type="text" name="Lperfilpri_atuante" id="Lperfilpri_atuante" placeholder="vão máximo atuante do perfil primario" readonly="" /> m
 					
 			</fieldset>
 
@@ -112,9 +114,10 @@
 						<fieldset>
 				<legend>Carga no poste</legend>
 					<p> área de influencia considerada:</p>	
-					<input type="text" name="area" id="= area" placeholder="area de influencia" />
+					<input type="text" name="area" id="= area" placeholder="area de influencia" /> m²
 					<p> Carga no poste:</p>	
-					<input type="text" name="cargaposte" id="= cargaposte" placeholder="carga no poste" />	
+					<input type="text" name="cargaposte" id="= cargaposte" placeholder="carga no poste" />	tf
+					<br>
 					<br>
 					<button type="submit" name="salvarCalculo" title="Salva novo Calculo">Salvar</button> 
 			</fieldset>
@@ -139,8 +142,8 @@
 				if(data.Erro != null){
 					alert(data.Erro);
 				}else{
-					$('#peso_lj_momento').val(data.Momento);
-					$('#peso_lj_flecha').val(data.Flecha);
+					$('#peso_lj_momento').val(data.Momento.toFixed(3));
+					$('#peso_lj_flecha').val(data.Flecha.toFixed(3));
 				}
 			}
 		});
@@ -198,7 +201,35 @@
 		});
 	});
 
-	
+	$('#CalcularPerfilPrimario').click(function(){
+		var espessura = $('#espessura').val();
+		var perfil_primario = $('#perfil_primario option:selected').val();
+		var perfil_secundario = $('#perfil_secundario option:selected').val();
+		var vao_atuante = $('#Lperfilsec_atuante').val();
+		var vao_admissivel = $('#Lperfilsecundario').val();
+		var compensado = $('#compensado option:selected').val();
+
+		$.ajax({
+			url: 'calcular.php?action=CalcularVaoPerfilSecundario',
+			type: 'POST',
+			data: {
+				'ID_perfil_primario': perfil_primario,
+				'ID_perfil_secundario' : perfil_secundario,
+				'Espessura': espessura,
+				'vao_atuante': vao_atuante,
+				'vao_admissivel':vao_admissivel,
+				'Id_compensado': compensado
+			},
+			success:function(data){
+				console.log(data);
+				if(data.Erro != null){
+					alert(data.Erro);
+				}else{
+					$('#Lperfilprimario').val(data.VaoMaximoAdmissivel.toFixed(2));
+				}
+			}
+		});
+	});
 	
 	
 </script>
