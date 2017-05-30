@@ -31,6 +31,12 @@
         return false;
      }
 
+     if($action == 'CalcularCargaPoste'){
+        CalcularCargaPoste();
+        return false;
+     }
+
+
 
 
      //Calculo do peso da laje pelo momento
