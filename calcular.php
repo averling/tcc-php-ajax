@@ -214,6 +214,7 @@
         $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
         $Espessura = (float) str_replace(',' , '.', $Espessura);
         $vao_atuante = isset($_POST['vao_atuante']) ? $_POST['vao_atuante'] : null;
+        $vao_atuante = (float) str_replace(',' , '.', $vao_atuante);
         $vao_admissivel = isset($_POST['vao_admissivel']) ? $_POST['vao_admissivel'] : null;
         $id_compensado = isset($_POST['Id_compensado']) ? $_POST['Id_compensado'] : null;
         // $espessura = 0.15;
@@ -318,7 +319,7 @@
 //Calculos do Perfil Primario
 
     function TestePerfilPrimario($peso_laje, $peso_compensado, $peso_perfil_secundario, $peso_perfil_primario, $vao_atuante){
-        return ($peso_laje + ($peso_compensado / 1000) + (2 * ($peso_perfil_secundario / 1000)) + ($peso_perfil_primario/1000) ) * ($vao_atuante / 100);
+        return ($peso_laje + ($peso_compensado / 1000) + (2 * ($peso_perfil_secundario / 1000)) + ($peso_perfil_primario/1000) ) * ($vao_atuante );
     }
 
 
@@ -338,14 +339,27 @@
 //Validação e Respostas do vão do perfil Primario
     function TesteVaoPerfilPrimario(){
         // var_dump($_POST);
-        $ID_perfil_primario = isset($_POST['ID_perfil']) ? $_POST['ID_perfil'] : null;
-        $ID_perfil_secundario = isset($_POST['ID_perfil']) ? $_POST['ID_perfil'] : null;
+        
+        $ID_perfil_primario = isset($_POST['ID_perfil_primario']) ? $_POST['ID_perfil_primario'] : null;
+        $ID_perfil_secundario = isset($_POST['ID_perfil_secundario']) ? $_POST['ID_perfil_secundario'] : null;
         $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
         $Espessura = (float) str_replace(',' , '.', $Espessura);
         $vao_atuante = isset($_POST['vao_atuante']) ? $_POST['vao_atuante'] : null;
+         $vao_atuante = (float) str_replace(',' , '.', $vao_atuante);
         $vao_admissivel = isset($_POST['vao_admissivel']) ? $_POST['vao_admissivel'] : null;
         $id_compensado = isset($_POST['Id_compensado']) ? $_POST['Id_compensado'] : null;
+       
         // $espessura = 0.15;
+        // echo 'ID do perfil primario' . $ID_perfil_primario .'<br>';
+        // echo 'ID do perfil secundario' . $ID_perfil_secundario . '<br>';
+
+        // $ID_perfil_primario = 2;
+        // $ID_perfil_secundario = 3;
+        // $Espessura = 0.15;
+        // $vao_atuante = 44;
+        // $vao_admissive = 44;
+        // $id_compensado = 4;
+
 
         if ($vao_atuante > $vao_admissivel || $vao_atuante <=0){
 
@@ -412,6 +426,11 @@
 
         $flecha_perfil = TesteFlechaPerfilPrimario($perfil_primario['e_perfil'], $perfil_primario['j_perfil'], $momento_perfil, $flecha_perfil_primario) / 100;
 
+        // echo 'Peso pela flecha perfil primario: ' . $flecha_perfil_primario;
+        // echo 'Peso pelo momento perfil primario' . $momento_perfil_primario;
+        // echo 'momento perfil' . $momento_perfil;
+        // echo 'flecha perfil' . $flecha_perfil;
+
 
         if($momento_perfil > $flecha_perfil){
             $resposta = array(
@@ -424,6 +443,93 @@
         }
 
         
+        header('Content-Type: application/json');
+            echo json_encode($resposta);
+
+    }
+
+//------------------------------------------------------------------------------------------------------------------------------
+//Calculo de Carga no Poste
+
+    function CargaPoste($peso_laje, $peso_compensado, $peso_perfil_secundario, $peso_perfil_primario){
+        return ($peso_laje + ($peso_compensado / 1000) + (2*($peso_perfil_secundario / 1000)) + ($peso_perfil_primario/1000) );
+
+    }
+
+    
+    function CalcularCargaPoste(){
+
+        $ID_perfil_primario = isset($_POST['ID_perfil_primario']) ? $_POST['ID_perfil_primario'] : null;
+        $ID_perfil_secundario = isset($_POST['ID_perfil_secundario']) ? $_POST['ID_perfil_secundario'] : null;
+        $Espessura = isset($_POST['Espessura']) ? $_POST['Espessura'] : null;
+        $Espessura = (float) str_replace(',' , '.', $Espessura);
+        $id_compensado = isset($_POST['Id_compensado']) ? $_POST['Id_compensado'] : null;
+        $vao_primario = isset($_POST['vao_primario']) ? $_POST['vao_primario'] : null;
+        $vao_primario = (float) str_replace(',' , '.', $vao_primario);
+        $vao_secundario = isset($_POST['vao_secundario']) ? $_POST['vao_secundario'] : null;
+        $vao_secundario = (float) str_replace(',' , '.', $vao_secundario);
+
+        if($Espessura == null || $Espessura <= 0){
+            $resposta = array(
+                'Erro' => "Valor da espessura inválido."
+            );
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
+
+        if($vao_primario == null || $vao_primario <= 0){
+            $resposta = array(
+                'Erro' => "Vão do primario inválido."
+            );
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
+
+        if($vao_secundario == null || $vao_secundario <= 0){
+            $resposta = array(
+                'Erro' => "Vão do secundario inválido."
+            );
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
+
+        if($ID_perfil_primario == null || $ID_perfil_primario == 0){
+            $resposta = array('Erro'=>'Perfil Primario não encontrado ou invalido. Selecione novamente');
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
+
+        if($ID_perfil_secundario == null || $ID_perfil_secundario == 0){
+            $resposta = array('Erro'=>'Perfil Secundario não encontrado ou invalido. Selecione novamente');
+            header('Content-Type: application/json');
+            echo json_encode($resposta);
+            return false;
+        }
+
+
+        $peso_laje = CalcularMomento($Espessura);
+
+        require_once('connect.php');
+        $con = new Connect();
+
+        $compensado = $con->RetornarDadosCompensado($id_compensado);
+        $perfil_primario = $con->RetornarDadosPerfil($ID_perfil_primario);
+        $perfil_secundario = $con->RetornarDadosPerfil($ID_perfil_secundario);
+
+
+        $area_influencia = ( $vao_primario * $vao_secundario);
+        $carga = CargaPoste($peso_laje, $compensado['peso_proprio'], $perfil_secundario['peso_perfil'], $perfil_primario['peso_perfil']);
+        $carga_poste = $area_influencia * $carga;
+
+        $resposta = array(
+                "Carga_poste" => $carga_poste,
+                "area" => $area_influencia
+                );
+
         header('Content-Type: application/json');
             echo json_encode($resposta);
 

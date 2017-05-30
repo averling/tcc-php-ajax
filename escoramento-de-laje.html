@@ -106,7 +106,7 @@
 					<p> Vão máximo admissivel pelo perfil primario:</p>	
 					<input type="text" name="Lperfilprimario" id="Lperfilprimario" placeholder="vão máximo do perfil primario" readonly="" /> m
 					<p> Vão máximo atuante pelo perfil primario:</p>	
-					<input type="text" name="Lperfilpri_atuante" id="Lperfilpri_atuante" placeholder="vão máximo atuante do perfil primario" readonly="" /> m
+					<input type="text" name="Lperfilpri_atuante" id="Lperfilpri_atuante" placeholder="vão máximo atuante do perfil primario" /> m
 					
 			</fieldset>
 
@@ -114,7 +114,10 @@
 						<fieldset>
 				<legend>Carga no poste</legend>
 					<p> área de influencia considerada:</p>	
-					<input type="text" name="area" id="= area" placeholder="area de influencia" /> m²
+					<input type="text" name="area" id="area" placeholder="area de influencia" /> m²
+					<br>
+					<br>
+					<button type="submit" name="calc_carga_poste" id="calc_carga_poste" title="Calcula carga no poste">Calcular Carga no Poste</button> 
 					<p> Carga no poste:</p>	
 					<input type="text" name="cargaposte" id="= cargaposte" placeholder="carga no poste" />	tf
 					<br>
@@ -167,7 +170,7 @@
 				if(data.Erro != null){
 					alert(data.Erro);
 				}else{
-					$('#Lcomp').val(data.Vao*100);
+					$('#Lcomp').val((data.Vao*100).toFixed(2));
 				}
 			}
 		});
@@ -201,6 +204,7 @@
 		});
 	});
 
+
 	$('#CalcularPerfilPrimario').click(function(){
 		var espessura = $('#espessura').val();
 		var perfil_primario = $('#perfil_primario option:selected').val();
@@ -210,7 +214,7 @@
 		var compensado = $('#compensado option:selected').val();
 
 		$.ajax({
-			url: 'calcular.php?action=CalcularVaoPerfilSecundario',
+			url: 'calcular.php?action=CalcularVaoPerfilPrimario',
 			type: 'POST',
 			data: {
 				'ID_perfil_primario': perfil_primario,
@@ -230,6 +234,38 @@
 			}
 		});
 	});
-	
+
+
+	$('#calc_carga_poste').click(function(){
+		var espessura = $('#espessura').val();
+		var perfil_primario = $('#perfil_primario option:selected').val();
+		var perfil_secundario = $('#perfil_secundario option:selected').val();
+		var vao_primario = $('#Lperfilprimario').val();
+		var vao_secundario = $('#Lperfilsecundario').val();
+		var compensado = $('#compensado option:selected').val();
+
+		$.ajax({
+			url: 'calcular.php?action=CalcularCargaPoste',
+			type: 'POST',
+			data: {
+				'ID_perfil_primario': perfil_primario,
+				'ID_perfil_secundario' : perfil_secundario,
+				'Espessura': espessura,
+				'vao_primario': vao_primario,
+				'vao_secundario':vao_secundario,
+				'Id_compensado': compensado
+			},
+			success:function(data){
+				console.log(data);
+				if(data.Erro != null){
+					alert(data.Erro);
+				}else{
+					$('#cargaposte').val(data.Carga_poste);
+					$('#area').val(data.area_influencia);
+				}
+			}
+		});
+	});
+
 	
 </script>
