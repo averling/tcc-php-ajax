@@ -4,7 +4,7 @@
 
 	<section id="segura-items">
 		<h3>Escoramento de Laje</h3>
-		<form  name="form" action="http://<?php echo $host; ?>/<?php echo $wpFolder; ?>/crud/" method="POST"> 
+		<form  name="form" action="" method="POST"> 
 
 			<!-- Informações sobre a estrutura e peso da laje-->
 			<fieldset>	
@@ -113,13 +113,15 @@
 		<!-- Informações sobre carga no poste-->
 						<fieldset>
 				<legend>Carga no poste</legend>
-					<p> área de influencia considerada:</p>	
-					<input type="text" name="area" id="area" placeholder="area de influencia" readonly="" /> m²
+					<p> área de influencia pelo espaçamento máximo dos perfis:</p>	
+					<input type="text" name="area" id="area_influencia" placeholder="area de influencia"  /> m²
 					<br>
 					<br>
-					<button type="submit" name="calc_carga_poste" id="calc_carga_poste" title="Calcula carga no poste">Calcular Carga no Poste</button> 
+					
+					<input type ='button' name="carga_no_poste" id= "carga_no_poste" value= 'Calcula carga no poste'> 
+					
 					<p> Carga no poste:</p>	
-					<input type="text" name="cargaposte" id="= cargaposte" placeholder="carga no poste" readonly="" />	tf
+					<input type="text" name="carga_poste" id="carga_poste" placeholder="carga no poste" readonly="" />	tf
 					<br>
 					<br>
 					<button type="submit" name="salvarCalculo" title="Salva novo Calculo">Salvar</button> 
@@ -236,13 +238,14 @@
 	});
 
 
-	$('#calc_carga_poste').click(function(){
+	$('#carga_no_poste').click(function(){
 		var espessura = $('#espessura').val();
 		var perfil_primario = $('#perfil_primario option:selected').val();
 		var perfil_secundario = $('#perfil_secundario option:selected').val();
-		var vao_primario = $('#Lperfilprimario').val();
-		var vao_secundario = $('#Lperfilsecundario').val();
+		var vao_primario = $('#Lperfilpri_atuante').val();
+		var vao_secundario = $('#Lperfilsec_atuante').val();
 		var compensado = $('#compensado option:selected').val();
+		//var area = $('#area').val();
 
 		$.ajax({
 			url: 'calcular.php?action=CalcularCargaPoste',
@@ -253,15 +256,17 @@
 				'Espessura': espessura,
 				'vao_primario': vao_primario,
 				'vao_secundario':vao_secundario,
-				'Id_compensado': compensado
+				'Id_compensado': compensado,
+				//'area':area
 			},
 			success:function(data){
 				console.log(data);
 				if(data.Erro != null){
 					alert(data.Erro);
 				}else{
-					$('#cargaposte').val(data.Carga_poste);
-					$('#area').val(data.area_influencia);
+					
+					$('#carga_poste').val(data.peso.toFixed(2));
+					$('#area_influencia').val(data.area_influencia.toFixed(2));
 				}
 			}
 		});

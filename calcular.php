@@ -474,6 +474,7 @@
         $vao_primario = (float) str_replace(',' , '.', $vao_primario);
         $vao_secundario = isset($_POST['vao_secundario']) ? $_POST['vao_secundario'] : null;
         $vao_secundario = (float) str_replace(',' , '.', $vao_secundario);
+        $area = isset($_POST['area']) ? $_POST['area'] : null;
 
         if($Espessura == null || $Espessura <= 0){
             $resposta = array(
@@ -530,13 +531,16 @@
         $area_influencia = ( $vao_primario * $vao_secundario);
         $carga = CargaPoste($peso_laje, $compensado['peso_proprio'], $perfil_secundario['peso_perfil'], $perfil_primario['peso_perfil']);
         $carga_poste = $area_influencia * $carga;
-
+        // $carga_poste = $area * $carga;
+        
         $resposta = array(
-                "Carga_poste" => $carga_poste,
-                "area" => $area_influencia
+                "peso" => $carga_poste,
+                "area_influencia" => $area_influencia
                 );
 
         header('Content-Type: application/json');
             echo json_encode($resposta);
 
     }
+
+    
