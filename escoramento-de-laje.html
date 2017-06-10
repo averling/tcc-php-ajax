@@ -35,7 +35,7 @@
 
 					</select>  
 					<br>
-					<p>Escolha o tipo do compensado</p>
+					<p>Escolha o tipo da chapa do compensado</p>
 					<select id="tipo_comp">
 						<option value="0">Selecione um item</option>
 						<?php 
@@ -62,8 +62,8 @@
 
 			<!-- Informações sobre o perfil secundario-->
 			<fieldset>
-				<legend>Dados do perfil secundario</legend>
-					<p>Escolha o perfil secundario:</p>
+				<legend>Dados do perfil secundário</legend>
+					<p>Escolha o perfil secundário:</p>
 					<select id="perfil_secundario"> 
 					<option value="0">Selecione um item</option>
 						<?php
@@ -76,19 +76,19 @@
 					</select>
 					<br>
 					<br>
-					<input type="button" value="Calcular Vao do Perfil" id="CalcularPerfilSecundario">
-					<p> Vão máximo admissivel pelo perfil secundario:</p>	
+					<input type="button" value="Calcular Vão do Perfil" id="CalcularPerfilSecundario">
+					<p> Vão máximo admissível pelo perfil secundário:</p>	
 					<input type="text" name="Lperfilsecundario" id="Lperfilsecundario" placeholder="vão máximo do perfil secundario" readonly="" /> m
 					<br>
-					<p> Vão máximo atuante pelo perfil secundario:</p>	
+					<p> Vão máximo atuante do perfil secundário:</p>	
 					<input type="text" name="Lperfilsec_atuante" id="Lperfilsec_atuante" placeholder="vão máximo atuante do perfil secundario"  /> m
 			</fieldset>
 
 
 			<!-- Informações sobre o perfil primario-->
 			<fieldset>
-				<legend>Dados do perfil primario</legend>
-					<p>Escolha o perfil primario:</p>
+				<legend>Dados do perfil primário</legend>
+					<p>Escolha o perfil primário:</p>
 					<select id="perfil_primario">
 					<option value="0">Selecione um item</option>
 						<?php
@@ -101,11 +101,11 @@
 					</select>	
 					<br>
 					<br>
-					<input type="button" value="Calcular Vao do Perfil" id="CalcularPerfilPrimario">
+					<input type="button" value="Calcular Vão do Perfil" id="CalcularPerfilPrimario">
 
-					<p> Vão máximo admissivel pelo perfil primario:</p>	
+					<p> Vão máximo admissível pelo perfil primário:</p>	
 					<input type="text" name="Lperfilprimario" id="Lperfilprimario" placeholder="vão máximo do perfil primario" readonly="" /> m
-					<p> Vão máximo atuante pelo perfil primario:</p>	
+					<p> Vão máximo atuante do perfil primário:</p>	
 					<input type="text" name="Lperfilpri_atuante" id="Lperfilpri_atuante" placeholder="vão máximo atuante do perfil primario" /> m
 					
 			</fieldset>
@@ -113,13 +113,11 @@
 		<!-- Informações sobre carga no poste-->
 						<fieldset>
 				<legend>Carga no poste</legend>
-					<p> área de influencia pelo espaçamento máximo dos perfis:</p>	
+					<br>
+					<input type ='button' name="carga_no_poste" id= "carga_no_poste" value= 'Calcula carga no poste'> 
+					<p> área de influência pelo espaçamento máximo dos perfis:</p>	
 					<input type="text" name="area" id="area_influencia" placeholder="area de influencia"  /> m²
 					<br>
-					<br>
-					
-					<input type ='button' name="carga_no_poste" id= "carga_no_poste" value= 'Calcula carga no poste'> 
-					
 					<p> Carga no poste:</p>	
 					<input type="text" name="carga_poste" id="carga_poste" placeholder="carga no poste" readonly="" />	tf
 					<br>
